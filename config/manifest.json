@@ -1,0 +1,32 @@
+{
+    "name": "__MSG_appName__",
+    "description": "__MSG_appDesc__",
+    "default_locale": "en",
+    "version": "2021.9.2",
+    "icons": {
+        "16": "assets/img/icon_16.png",
+        "48": "assets/img/icon_48.png",
+        "128": "assets/img/icon_128.png"
+    },
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": "assets/img/icon_48.png",
+        "default_popup": "html/popup.html"
+    },
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
+    },
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "*://*/*",
+        "webNavigation",
+        "activeTab",
+        "tabs",
+        "storage",
+        "<all_urls>",
+        "alarms"
+    ]
+}

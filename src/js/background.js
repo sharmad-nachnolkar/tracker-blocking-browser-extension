@@ -1,0 +1,1 @@
+console.log('This is extension tracker blocker - file - background')
