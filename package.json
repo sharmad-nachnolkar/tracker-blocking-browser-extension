@@ -4,7 +4,8 @@
   "description": "Browser extension to block trackers from tracking users across the web.",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "prepare": "husky install"
   },
   "keywords": [
     "trackers",
@@ -16,10 +17,30 @@
   "author": "Sharmad Nachnolkar",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^9.0.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
     "filemanager-webpack-plugin": "^6.1.7",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
+    "prettier": "2.4.1",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "^5.53.0",
     "webpack-cli": "^4.8.0"
-  }
+  },
+  "dependencies": {
+    "core-js": "^3.17.3",
+    "regenerator-runtime": "^0.13.9",
+    "tldts": "^5.7.44",
+    "webextension-polyfill": "^0.8.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "browserslist": "> 0.25%, not dead"
 }

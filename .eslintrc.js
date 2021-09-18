@@ -1,0 +1,18 @@
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  extends: ["airbnb-base", "prettier"],
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: "module",
+  },
+  rules: {
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
+    "default-case": "off",
+    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+  },
+};
