@@ -4,5 +4,7 @@ export const REQUEST_TYPES = [
   "image",
   "xmlhttprequest",
 ];
+
+// Served through github pages. For production this can be moved to a more scalable storage like s3
 export const TRACKER_LIST_FETCH_URL =
-  "https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/";
+  "https://sharmad-nachnolkar.github.io/tracker-blocking-browser-extension/trackers.json";

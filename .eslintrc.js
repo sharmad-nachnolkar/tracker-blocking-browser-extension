@@ -13,6 +13,8 @@ module.exports = {
     "consistent-return": "off",
     "default-case": "off",
     "import/prefer-default-export": "off",
+    "no-restricted-syntax": "off",
+    "no-continue": "off",
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
   },
