@@ -1,1 +1,1 @@
-console.log('This is browser extension file - popup')
+console.log("This is browser extension file - popup");
