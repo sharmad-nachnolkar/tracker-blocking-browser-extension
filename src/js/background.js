@@ -1,30 +1,43 @@
 // import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { getDomainName } from "./utils/genericUtils";
-import { REQUEST_TYPES } from "./constants";
+import { REQUEST_TYPES, STORAGE_NAMES } from "./constants";
 import getTrackerInstance from "./models/trackers";
+import { getFromStorage, saveToStorage } from "./utils/storageUtils";
 
 const browser = require("webextension-polyfill");
 
 const trackerInstance = getTrackerInstance();
-console.log("This is extension tracker blocker - file - background");
 
 // handlers
-function handleOnBeforeRequest(requestDetails) {
+async function handleOnBeforeRequest(requestDetails) {
   // TODO: Add whitelisting condition of user
   const documentHostName = getDomainName(requestDetails.documentUrl);
   const requestHostName = getDomainName(requestDetails.url);
+  // TODO: Confirm this check. Do we want to allow subdomains to hit other subdomains of that TLD?
   if (documentHostName !== requestHostName) {
-    console.log(documentHostName, requestHostName);
+    // console.log(documentHostName, requestHostName);
+    const isCancel = await trackerInstance.checkTrackerBlocking(requestDetails);
+    if (isCancel) {
+      console.log(requestDetails.documentUrl, requestDetails.url);
+    }
     return {
-      cancel: trackerInstance.checkTrackerBlocking(requestDetails),
+      cancel: isCancel,
     };
   }
 }
 
-function handleOnInstall(details) {
+async function handleOnInstall(details) {
   console.log(details.reason);
   trackerInstance.updateTrackerList();
+  const currentWhiteListedDomains = await getFromStorage([
+    STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS,
+  ]);
+  if (!currentWhiteListedDomains) {
+    saveToStorage({
+      [STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS]: [],
+    });
+  }
 }
 //
 

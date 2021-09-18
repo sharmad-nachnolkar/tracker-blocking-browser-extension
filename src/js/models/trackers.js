@@ -1,5 +1,6 @@
-import { getDomainName } from "../utils/genericUtils";
-import { TRACKER_LIST_FETCH_URL } from "../constants";
+import { getDomainName, getAllSubdomains } from "../utils/genericUtils";
+import { getFromStorage } from "../utils/storageUtils";
+import { TRACKER_LIST_FETCH_URL, STORAGE_NAMES } from "../constants";
 
 class Tracker {
   constructor() {
@@ -17,16 +18,41 @@ class Tracker {
     console.log("LATEST TRACKER FETCHED - ", this._trackerList);
   }
 
-  checkTrackerBlocking(requestDetails) {
+  async checkTrackerBlocking(requestDetails) {
     const documentHostName = getDomainName(requestDetails.documentUrl);
+    const documentSubdomainList = getAllSubdomains(
+      requestDetails.documentUrl
+    ).concat([documentHostName]);
     const requestHostName = getDomainName(requestDetails.url);
+    const requestSubdomainList = getAllSubdomains(requestDetails.url).concat([
+      requestHostName,
+    ]);
+
     // Early Return: If document host and request host matches i.e. request is not to a third party domain,
     // then allow the request
     if (documentHostName === requestHostName) {
       return false;
     }
-    // TODO: Add checks to iteratively check subdomains of request also in the tracker list
-    const trackerEntry = this._trackerList[requestHostName];
+
+    // Check if user has whitelisted the domain. If yes, allow request
+    const whiteListedDomains = await getFromStorage(
+      STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS
+    );
+    if (
+      Array.isArray(whiteListedDomains) &&
+      whiteListedDomains.includes(documentHostName)
+    ) {
+      return false;
+    }
+
+    let trackerEntry;
+    for (const subdomain of requestSubdomainList) {
+      if (this._trackerList[subdomain]) {
+        trackerEntry = this._trackerList[subdomain];
+        break;
+      }
+    }
+
     // CASE: Early return if request domain is not in list of tracker domains then allow request
     if (trackerEntry === undefined) {
       return false;
@@ -57,21 +83,24 @@ class Tracker {
       // CASE: Rule is matched and there are no further options or exceptions
       // agains the rule so block the request
       if (
-        !Array.isArray(ruleObj.options) &&
-        !Array.isArray(ruleObj.exceptions)
+        !ruleObj.options?.domains &&
+        !ruleObj.options?.types &&
+        !ruleObj.exceptions?.domains &&
+        !ruleObj.exceptions?.types
       ) {
         return true;
       }
-
       // Compute match against 'domain' and 'types' attributes of 'options' and 'exceptions'
       // TODO: Need to match sub domains also here iteratively
-      const isOptionDomainRuleMatched =
-        ruleObj.options?.domains?.includes?.(documentHostName);
+      const isOptionDomainRuleMatched = documentSubdomainList.some(
+        (subdomain) => ruleObj.options?.domains?.includes?.(subdomain)
+      );
       const isOptionRequestTypeRuleMatched = ruleObj.options?.types?.includes?.(
         requestDetails.type
       );
-      const isExceptionDomainRuleMatched =
-        ruleObj.exceptions?.domains?.includes?.(documentHostName);
+      const isExceptionDomainRuleMatched = documentSubdomainList.some(
+        (subdomain) => ruleObj.exceptions?.domains?.includes?.(subdomain)
+      );
       const isExceptionRequestTypeRuleMatched =
         ruleObj.exceptions?.types?.includes?.(requestDetails.type);
 

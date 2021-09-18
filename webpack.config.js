@@ -30,23 +30,25 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "src/html", to: "html" },
+        { from: "src/assets", to: "assets" },
         { from: "config/manifest.json", to: "." },
         { from: "config/_locales", to: "_locales" },
       ],
     }),
   ],
+  devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map',
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          format: {
-            comments: false,
-          },
-        },
-        extractComments: false,
-      }),
+      // new TerserPlugin({
+      //   parallel: true,
+      //   terserOptions: {
+      //     format: {
+      //       comments: false,
+      //     },
+      //   },
+      //   extractComments: false,
+      // }),
       new FilemanagerPlugin({
         events: {
           onEnd: {

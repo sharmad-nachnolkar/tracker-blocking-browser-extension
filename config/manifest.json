@@ -4,13 +4,14 @@
   "default_locale": "en",
   "version": "2021.09.18",
   "icons": {
-    "16": "assets/img/icon_16.png",
-    "48": "assets/img/icon_48.png",
-    "128": "assets/img/icon_128.png"
+    "16": "assets/images/icon_16.png",
+    "32": "assets/images/icon_32.png",
+    "48": "assets/images/icon_48.png",
+    "128": "assets/images/icon_128.png"
   },
   "manifest_version": 2,
   "browser_action": {
-    "default_icon": "assets/img/icon_48.png",
+    "default_icon": "assets/images/icon_48.png",
     "default_popup": "html/popup.html"
   },
   "background": {
@@ -20,6 +21,7 @@
     "webRequest",
     "webRequestBlocking",
     "storage",
+    "tabs",
     "<all_urls>",
     "alarms"
   ]
