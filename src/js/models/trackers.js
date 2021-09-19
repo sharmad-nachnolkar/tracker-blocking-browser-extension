@@ -18,6 +18,9 @@ class Tracker {
     const blockedTrackers = await getFromStorage(
       STORAGE_NAMES.BLOCKED_TRACKERS
     );
+    if (!blockedTrackers) {
+      return {};
+    }
     if (tabId) {
       return blockedTrackers[tabId];
     }
@@ -30,13 +33,13 @@ class Tracker {
   }
 
   async checkTrackerBlocking(requestDetails) {
-    const whiteListedDomains = await getFromStorage(
+    const whitelistedDomains = await getFromStorage(
       STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS
     );
     const isCancel = matchTrackersWithUrl(
       requestDetails,
       this._trackerList,
-      whiteListedDomains
+      whitelistedDomains
     );
     if (isCancel) {
       this.updateBlockedTrackers(requestDetails);
@@ -61,7 +64,9 @@ class Tracker {
     }
     currentBlockedTrackers[currentTab.id][requestDomainName].push({
       url: requestDetails.url,
-      documentUrl: getDomainName(requestDetails.documentUrl),
+      documentDomain: getDomainName(
+        requestDetails.documentUrl ?? requestDetails.initiator
+      ),
     });
     saveToStorage({
       [STORAGE_NAMES.BLOCKED_TRACKERS]: currentBlockedTrackers,

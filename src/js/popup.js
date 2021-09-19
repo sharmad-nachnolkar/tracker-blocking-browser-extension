@@ -4,30 +4,33 @@ import { getCurrentTab, reloadTab } from "./utils/tabUtils";
 import { getDomainName } from "./utils/genericUtils";
 import getTrackerInstance from "./models/trackers";
 
-// TODO: handle addition and removal change. Right now its only adding
 const handlePreventTrackingChange = async (event) => {
-  let currentWhiteListedDomains = await getFromStorage(
+  let currentWhitelistedDomains = await getFromStorage(
     STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS
   );
-  if (!currentWhiteListedDomains) {
-    currentWhiteListedDomains = [];
+  if (!currentWhitelistedDomains) {
+    currentWhitelistedDomains = [];
   }
   const currentTab = await getCurrentTab();
   const currentTabDomain = getDomainName(currentTab.url);
+  // Case if user has de-activated tracking on the current site
+  // This is string "true" as it is coming from HTML element value
   if (event.target.value === "true") {
-    currentWhiteListedDomains.push(currentTabDomain);
+    currentWhitelistedDomains.push(currentTabDomain);
   } else {
-    const whiteListIndex = currentWhiteListedDomains.indexOf(currentTabDomain);
-    currentWhiteListedDomains.splice(whiteListIndex, 1);
+    // Case if user has activated tracking on the current site
+    const whiteListIndex = currentWhitelistedDomains.indexOf(currentTabDomain);
+    currentWhitelistedDomains.splice(whiteListIndex, 1);
   }
   await saveToStorage({
-    [STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS]: currentWhiteListedDomains,
+    [STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS]: currentWhitelistedDomains,
   });
+  // Reload tab to reflect user preferences
+  await reloadTab(currentTab.id, true);
   window.close();
-  reloadTab(currentTab.id, true);
 };
 
-const formWhiteListedDomainHtml = (whitelistedDomains) =>
+const formWhitelistedDomainHtml = (whitelistedDomains) =>
   whitelistedDomains.map((domain) => `<span>${domain}</span><br>`).join("");
 
 const formBlockedTrackersHtml = (blockedTrackers) => {
@@ -39,19 +42,7 @@ const formBlockedTrackersHtml = (blockedTrackers) => {
   }
   return blockedTrackerHtmlList.join("");
 };
-
-// getFromStorage(STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS);
-const handleOnLoad = async () => {
-  const currentWhiteListedDomains = await getFromStorage(
-    STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS
-  );
-  const currentTab = await getCurrentTab();
-  const currentTabDomain = getDomainName(currentTab.url);
-  const preventTrackingValue = !!(
-    currentWhiteListedDomains &&
-    currentWhiteListedDomains.includes(currentTabDomain)
-  );
-
+const initTrackingSelectionOption = (preventTrackingValue) => {
   const radios = document.querySelectorAll(
     'input[type=radio][name="preventTracking"]'
   );
@@ -61,29 +52,53 @@ const handleOnLoad = async () => {
       radio.checked = true;
     }
   });
-
-  let whiteListedDomainsHtml = null;
-  if (currentWhiteListedDomains) {
-    whiteListedDomainsHtml = formWhiteListedDomainHtml(
-      currentWhiteListedDomains
+};
+const initWhitelistedDomainsList = (currentWhitelistedDomains) => {
+  let whitelistedDomainsHtml = null;
+  if (currentWhitelistedDomains) {
+    whitelistedDomainsHtml = formWhitelistedDomainHtml(
+      currentWhitelistedDomains
     );
     const whitelistedDomainsDiv = document.querySelector(
       'div[id="whitelistedDomains"]'
     );
     whitelistedDomainsDiv.innerHTML =
-      whiteListedDomainsHtml === "" ? "NONE" : whiteListedDomainsHtml;
+      whitelistedDomainsHtml === "" ? "NONE" : whitelistedDomainsHtml;
   }
-
-  const trackerInstance = getTrackerInstance();
-  const blockedTrackers = await trackerInstance.getBlockedTrackers(
-    currentTab.id
-  );
+};
+const initBlockedTrackersList = async (blockedTrackers) => {
   const blockedTrackersHtml = formBlockedTrackersHtml(blockedTrackers);
   const blockedTrackersDiv = document.querySelector(
     'div[id="blockedTrackers"]'
   );
   blockedTrackersDiv.innerHTML =
     blockedTrackersHtml === "" ? "NONE" : blockedTrackersHtml;
+};
+
+const handleOnLoad = async () => {
+  // Fetch and compute values required to setup DOM element values and listeners
+  const currentWhitelistedDomains = await getFromStorage(
+    STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS
+  );
+  const currentTab = await getCurrentTab();
+  const currentTabDomain = getDomainName(currentTab.url);
+  const preventTrackingValue = !!(
+    currentWhitelistedDomains &&
+    currentWhitelistedDomains.includes(currentTabDomain)
+  );
+  const trackerInstance = getTrackerInstance();
+  const blockedTrackers = await trackerInstance.getBlockedTrackers(
+    currentTab.id
+  );
+
+  // Call DOM value setters / HTML formers / listener adders with above computed values
+  initTrackingSelectionOption(preventTrackingValue);
+  initWhitelistedDomainsList(currentWhitelistedDomains);
+  // If user has not prevented tracking on the current site
+  // then show user entire history of blocked trackers on that tab
+  if (!preventTrackingValue) {
+    initBlockedTrackersList(blockedTrackers);
+  }
 };
 
 handleOnLoad();

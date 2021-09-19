@@ -3,6 +3,9 @@ export const REQUEST_TYPES = [
   "script",
   "image",
   "xmlhttprequest",
+  "ping",
+  "object",
+  "other",
 ];
 
 // Served through github pages. For production this can be moved to a more scalable storage like s3

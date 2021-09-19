@@ -11,11 +11,7 @@ const trackerInstance = getTrackerInstance();
 
 // handlers
 async function handleOnBeforeRequest(requestDetails) {
-  // console.log(documentHostName, requestHostName);
   const isCancel = await trackerInstance.checkTrackerBlocking(requestDetails);
-  if (isCancel) {
-    console.log(requestDetails.documentUrl, requestDetails.url);
-  }
   return {
     cancel: isCancel,
   };
@@ -26,18 +22,18 @@ function handleTabClosed(tabId, removed) {
   trackerInstance.clearTabLogs(tabId);
 }
 
-function handleTabUpdated(tabId) {
-  console.log("UPDATED - ", tabId);
-  trackerInstance.clearTabLogs(tabId);
-}
+// function handleTabUpdated(tabId, changeInfo, tab) {
+//   console.log(changeInfo, tab)
+//   trackerInstance.clearTabLogs(tabId);
+// }
 
-async function handleOnInstall(details) {
-  console.log(details.reason);
+async function handleOnInstall() {
+  // Setting up initial values of variables
   trackerInstance.updateTrackerList();
-  const currentWhiteListedDomains = await getFromStorage([
+  const currentWhitelistedDomains = await getFromStorage([
     STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS,
   ]);
-  if (!currentWhiteListedDomains) {
+  if (!currentWhitelistedDomains) {
     saveToStorage({
       [STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS]: [],
     });
@@ -45,7 +41,6 @@ async function handleOnInstall(details) {
 }
 
 async function handleClearClosedTabLogs() {
-  debugger;
   const allOpenTabs = await browser.tabs.query({});
   const allOpenTabIds = allOpenTabs?.map((tab) => tab.id);
   const allBlockedTrackers = await trackerInstance.getBlockedTrackers();
@@ -65,7 +60,7 @@ async function handleClearClosedTabLogs() {
 browser.alarms.create("updateTrackerList", { periodInMinutes: 24 * 60 });
 // Clear stray tracker logs of closed tabs which were not cleared due to
 // a missed closed event for any reason.
-browser.alarms.create("clearClosedTabLogs", { periodInMinutes: 4 * 60 });
+browser.alarms.create("clearClosedTabLogs", { periodInMinutes: 24 * 60 });
 browser.alarms.onAlarm.addListener((event) => {
   switch (event.name) {
     case "updateTrackerList":
@@ -92,6 +87,7 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 browser.tabs.onRemoved.addListener(handleTabClosed);
-browser.tabs.onUpdated.addListener(handleTabUpdated, {
-  properties: ["status", "url"],
-});
+// browser.tabs.onUpdated.addListener(handleTabUpdated);
+// browser.tabs.onUpdated.addListener(handleTabUpdated, {
+//   properties: ["status", "url"],
+// });

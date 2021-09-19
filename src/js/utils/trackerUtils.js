@@ -1,14 +1,23 @@
 import { getDomainName, getAllSubdomains } from "./genericUtils";
 
+/**
+ * @requestDetails {object} object supplied by by browser in callback function of event listeners
+ * @trackerList {object} map of trackers to be blocked along with rules
+ * @whitelistedDomains {array} list of domains whitelisted by user
+ *
+ * @return {boolean} - returns boolean based on whether match is found
+ */
 export const matchTrackersWithUrl = (
   requestDetails,
   trackerList,
-  whiteListedDomains
+  whitelistedDomains
 ) => {
-  const documentHostName = getDomainName(requestDetails.documentUrl);
-  const documentSubdomainList = getAllSubdomains(
-    requestDetails.documentUrl
-  ).concat([documentHostName]);
+  // Firefox has documentUrl property. Chromium based browsers have initiator
+  const documentUrl = requestDetails.documentUrl ?? requestDetails.initiator;
+  const documentHostName = getDomainName(documentUrl);
+  const documentSubdomainList = getAllSubdomains(documentUrl).concat([
+    documentHostName,
+  ]);
   const requestHostName = getDomainName(requestDetails.url);
   const requestSubdomainList = getAllSubdomains(requestDetails.url).concat([
     requestHostName,
@@ -21,8 +30,8 @@ export const matchTrackersWithUrl = (
   }
   // Check if user has whitelisted the domain. If yes, allow request
   if (
-    Array.isArray(whiteListedDomains) &&
-    whiteListedDomains.includes(documentHostName)
+    Array.isArray(whitelistedDomains) &&
+    whitelistedDomains.includes(documentHostName)
   ) {
     return false;
   }

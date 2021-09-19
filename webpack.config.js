@@ -36,19 +36,19 @@ module.exports = {
       ],
     }),
   ],
-  devtool: process.env.NODE_ENV === "production" ? "" : "source-map",
+  devtool: process.env.NODE_ENV === "production" ? "" : "cheap-module-source-map",
   optimization: {
-    minimize: true,
+    // minimize: true,
     minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          format: {
-            comments: false,
-          },
-        },
-        extractComments: false,
-      }),
+      // new TerserPlugin({
+      //   parallel: true,
+      //   terserOptions: {
+      //     format: {
+      //       comments: false,
+      //     },
+      //   },
+      //   extractComments: false,
+      // }),
       new FilemanagerPlugin({
         events: {
           onEnd: {
@@ -56,7 +56,7 @@ module.exports = {
               {
                 format: "zip",
                 source: "./dist",
-                destination: "./dist/build.zip",
+                destination: "./builds/build.zip",
                 options: { zlib: { level: 6 } },
               },
             ],
