@@ -17,7 +17,7 @@ module.exports = {
     "no-continue": "off",
     "no-param-reassign": "off",
     "class-methods-use-this": "off",
-    "radix": "off",
+    radix: "off",
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
   },

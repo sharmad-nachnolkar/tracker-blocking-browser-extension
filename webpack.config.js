@@ -36,19 +36,19 @@ module.exports = {
       ],
     }),
   ],
-  devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map',
+  devtool: process.env.NODE_ENV === "production" ? "" : "source-map",
   optimization: {
     minimize: true,
     minimizer: [
-      // new TerserPlugin({
-      //   parallel: true,
-      //   terserOptions: {
-      //     format: {
-      //       comments: false,
-      //     },
-      //   },
-      //   extractComments: false,
-      // }),
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),
       new FilemanagerPlugin({
         events: {
           onEnd: {
