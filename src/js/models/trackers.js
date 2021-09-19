@@ -1,6 +1,7 @@
 import { getDomainName, getAllSubdomains } from "../utils/genericUtils";
-import { getFromStorage } from "../utils/storageUtils";
+import { getFromStorage, saveToStorage } from "../utils/storageUtils";
 import { TRACKER_LIST_FETCH_URL, STORAGE_NAMES } from "../constants";
+import { getCurrentTab } from "../utils/tabUtils";
 
 class Tracker {
   constructor() {
@@ -10,6 +11,16 @@ class Tracker {
 
   getTrackerList() {
     return this._trackerList;
+  }
+
+  async getBlockedTrackers(tabId) {
+    const blockedTrackers = await getFromStorage(
+      STORAGE_NAMES.BLOCKED_TRACKERS
+    );
+    if (tabId) {
+      return blockedTrackers[tabId];
+    }
+    return blockedTrackers;
   }
 
   async updateTrackerList() {
@@ -67,7 +78,11 @@ class Tracker {
       !Array.isArray(trackerEntry.rules) ||
       (Array.isArray(trackerEntry.rules) && trackerEntry.rules.length === 0)
     ) {
-      return trackerEntry.default === "block";
+      const isCancel = trackerEntry.default === "block";
+      if (isCancel) {
+        this.updateBlockedTrackers(requestDetails);
+      }
+      return isCancel;
     }
 
     // CASE: Rule(s) exists
@@ -88,6 +103,7 @@ class Tracker {
         !ruleObj.exceptions?.domains &&
         !ruleObj.exceptions?.types
       ) {
+        this.updateBlockedTrackers(requestDetails);
         return true;
       }
       // Compute match against 'domain' and 'types' attributes of 'options' and 'exceptions'
@@ -132,12 +148,54 @@ class Tracker {
       }
 
       // CASE: If exceptions don't match, block the request
+      this.updateBlockedTrackers(requestDetails);
       return true;
     }
 
     // If no rules match, check the default option on the tracker entry
     if (isMatchedRule === false) {
-      return trackerEntry.default === "block";
+      this.updateBlockedTrackers(requestDetails);
+      const isCancel = trackerEntry.default === "block";
+      if (isCancel) {
+        this.updateBlockedTrackers(requestDetails);
+      }
+      return isCancel;
+    }
+  }
+
+  async updateBlockedTrackers(requestDetails) {
+    const currentTab = await getCurrentTab();
+    const requestDomainName = getDomainName(requestDetails.url);
+    let currentBlockedTrackers = await getFromStorage(
+      STORAGE_NAMES.BLOCKED_TRACKERS
+    );
+    if (!currentBlockedTrackers) {
+      currentBlockedTrackers = {};
+    }
+    if (!currentBlockedTrackers[currentTab.id]) {
+      currentBlockedTrackers[currentTab.id] = {};
+    }
+    if (!currentBlockedTrackers[currentTab.id][requestDomainName]) {
+      currentBlockedTrackers[currentTab.id][requestDomainName] = [];
+    }
+    currentBlockedTrackers[currentTab.id][requestDomainName].push({
+      url: requestDetails.url,
+      documentUrl: getDomainName(requestDetails.documentUrl),
+    });
+    saveToStorage({
+      [STORAGE_NAMES.BLOCKED_TRACKERS]: currentBlockedTrackers,
+    });
+  }
+
+  async clearTabLogs(tabId) {
+    const currentBlockedTrackers = await getFromStorage(
+      STORAGE_NAMES.BLOCKED_TRACKERS
+    );
+    if (currentBlockedTrackers?.[tabId]) {
+      delete currentBlockedTrackers[tabId];
+      saveToStorage({
+        [STORAGE_NAMES.BLOCKED_TRACKERS]: currentBlockedTrackers,
+      });
     }
   }
 }

@@ -7,11 +7,36 @@
   </head>
 
   <body>
-    <span>Deactivate tracking on this site?</span><br />
-    <input type="radio" id="preventTracking_true" name="preventTracking" value="true" />
-    <label for="preventTracking_true">Yes</label>
-    <input type="radio" id="preventTracking_false" name="preventTracking" value="false" />
-    <label for="preventTracking_false">No</label>
+    <div>
+      <label><b>Deactivate tracking on this site?</b></label
+      ><br />
+      <input
+        type="radio"
+        id="preventTracking_true"
+        name="preventTracking"
+        value="true"
+      />
+      <label for="preventTracking_true">Yes</label>
+      <input
+        type="radio"
+        id="preventTracking_false"
+        name="preventTracking"
+        value="false"
+      />
+      <label for="preventTracking_false">No</label>
+    </div>
+    <hr />
+    <div>
+      <label><b>Blocked Trackers on this site</b></label
+      ><br />
+      <div id="blockedTrackers"></div>
+    </div>
+    <hr />
+    <div>
+      <label><b>Sites on which tracking is deactivated</b></label
+      ><br />
+      <div id="whitelistedDomains"></div>
+    </div>
 
     <script src="../js/popup.js" type="text/javascript"></script>
   </body>

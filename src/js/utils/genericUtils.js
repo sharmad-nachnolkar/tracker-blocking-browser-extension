@@ -9,6 +9,7 @@ export const getDomainName = (url) => {
 export const getAllSubdomains = (url) => {
   if (url === undefined || url === null) return [];
   const urlDetails = parse(url);
+  if (!urlDetails.subdomain) return [];
   const subdomainsPrefixList = urlDetails.subdomain.split(".");
   return subdomainsPrefixList.map(
     (subDomainPrefix, index, originalArray) =>
