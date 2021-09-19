@@ -49,7 +49,6 @@
     "src/**/*.{js,css}": [
       "eslint --fix src/",
       "prettier --write src/",
-      "jest --verbose",
       "git add"
     ]
   },
