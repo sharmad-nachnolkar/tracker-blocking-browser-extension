@@ -29,6 +29,10 @@ async function handleOnInstall() {
       [STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS]: [],
     });
   }
+  // Update current version to storage
+  saveToStorage({
+    [STORAGE_NAMES.VERSION]: browser.runtime.getManifest().version,
+  });
 }
 
 // events

@@ -37,7 +37,7 @@ module.exports = {
       ],
     }),
   ],
-  devtool: process.env.NODE_ENV === "production" ? "" : "cheap-module-source-map",
+  devtool: process.env.NODE_ENV === "production" ? "" : "source-map",
   optimization: {
     minimize: true,
     minimizer: [
