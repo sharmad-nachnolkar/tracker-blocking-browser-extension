@@ -1,4 +1,4 @@
-## Tracker Blocker ![Build](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/actions/workflows/build.yml/badge.svg)![Unit Tests](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/actions/workflows/test.yml/badge.svg) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![eslint: airbnb](https://badgen.net/badge/eslint/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
+## Tracker Blocker [![Build](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/actions/workflows/build.yml/badge.svg)](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/actions/workflows/build.yml) [![Unit Tests](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/actions/workflows/test.yml/badge.svg)](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/actions/workflows/test.yml) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![eslint: airbnb](https://badgen.net/badge/eslint/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)
 
 Tracker Blocker is a browser extension which works across multiple browsers to prevent online trackers from tracking your activity across your web visits.
 For more details read the [technical spec](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/blob/gh-pages/Tracker%20Blocker%20Extension%20-%20Tech%20Spec.pdf) based on which this product was built and the [flow diagram](https://miro.com/app/board/o9J_lxKZR4I=/) of the product.
@@ -6,6 +6,10 @@ For more details read the [technical spec](https://github.com/sharmad-nachnolkar
 [Download the tech spec pdf](https://sharmad-nachnolkar.github.io/tracker-blocking-browser-extension/Tracker%20Blocker%20Extension%20-%20Tech%20Spec.pdf)
 
 Also refer to the deviations from technical spec section below to take a note of the changes which were done in implementation phase and the reasons for them.
+
+![Screenshot of Tracker Blocker](https://sharmad-nachnolkar.github.io/tracker-blocking-browser-extension/Tracker_Browser_Extension.png)
+
+Watch the [video](https://www.loom.com/share/14831f37bcf64dd4a06ee63145896af4) of this extension running on Firefox.
 
 ---
 ### Steps to run the project 
@@ -26,12 +30,16 @@ This project needs node versions >= 10.x.x and npm >= 7.x.x
  1. Currently the blocked trackers are internally tracked and displayed to the user at a `tab` level. Hence if user is navigating to multiple sites in the same tab, user will see the entire blocked tracker history on that tab. Can add a feature for user to see which trackers are blocked in the currently opened site.
  2. The build is not tested in Safari since running a local build in Safari needs a XCode build. However since the project used the standard [WebExtensions APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs) which are supported in Safari (>= 14), the build should be usable in Safari as well as is or with minor tweaks.
  3. This extension is tested in Firefox, Chrome, Edge browsers. However, an exhaustive testing across different versions of these browsers can be done by using tools like BrowserStack.
+ 4. Currently `beacon` type requests are not intercepted. This is because chromium based browser use `ping` and does not support `beacon`. A conditional browser based check needs to be added to support `beacon` request on on Firefox.
+ 5. This extensions has not been tested on mobile version of browsers.
+
 
 ---
 ### Technical deviations from [tech spec](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension/blob/gh-pages/Tracker%20Blocker%20Extension%20-%20Tech%20Spec.pdf) and reasons
 
  1. Jest is used as the testing framework instead of Karma and Jasmine which was originally proposed in tech spec. This decision was taken because of easier and quick setup of Jest and also faster running of tests in node environment rather than spawning a browser. 
  2. Tracker matching function made as a utility (`utils/trackerUtils.js`) rather than making it part of tracker model (`models/trackers.js`). This decision was taken so as to keep the matching utility pure of any class variables and thus easily test it by providing a range of inputs (`utils/trackerUtils.test.js`). Since this logic is the core functionality of the extension, it is critical to keep it easily testable.
+ 3. `background.js` is split into `events.js` and `alarms.js` for more modularity and readability.
 
 ---
 ### Technologies 

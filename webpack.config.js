@@ -30,6 +30,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "src/html", to: "html" },
+        { from: "src/css", to: "css" },
         { from: "src/assets", to: "assets" },
         { from: "config/manifest.json", to: "." },
         { from: "config/_locales", to: "_locales" },
