@@ -1,4 +1,4 @@
-import { matchTrackersWithUrl } from "./trackerUtils";
+import { matchTrackers } from "./trackerUtils";
 import { trackerList } from "../../mockData/mockTrackerList";
 import {
   MOCK_URL_REQUESTS,
@@ -10,11 +10,7 @@ describe("Testing cases for tracker matching logic", () => {
     "CASE: $testDescription",
     ({ requestDetails, result }) => {
       expect(
-        matchTrackersWithUrl(
-          requestDetails,
-          trackerList,
-          MOCK_WHITELISTED_DOMAINS
-        )
+        matchTrackers(requestDetails, trackerList, MOCK_WHITELISTED_DOMAINS)
       ).toBe(result);
     }
   );

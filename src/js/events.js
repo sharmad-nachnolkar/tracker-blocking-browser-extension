@@ -42,7 +42,6 @@ browser.webRequest.onBeforeRequest.addListener(
   handleOnBeforeRequest,
   {
     urls: ["<all_urls>"],
-    // TODO: Need to add Beacon request types dynamically based on browser
     types: REQUEST_TYPES,
   },
   ["blocking"]

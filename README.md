@@ -78,6 +78,7 @@ This project needs node versions >= 12.x.x and npm >= 7.x.x
  9. Use integrations with cross browser testing tools like [BrowserStack](https://www.browserstack.com/integrations) to automatically [test the extension](https://www.browserstack.com/docs/automate/selenium/add-plugins-extensions-remote-browsers#introduction) in multiple browser environments.
  10. Integrate with open source tools like [self hosted Sentry](https://develop.sentry.dev/self-hosted/) for error monitoring
  11. Integrate with a backend service to capture logs like blocked tracker logs, performance logs and user events for analytics purposes.
+ 12. The `regenerator-runtime/runtime` script needs to be added as entry script in webpack rather than importing it in all files. This script is needed to support features like `async await` in certain browsers.
 
 ---
 ### Technical References

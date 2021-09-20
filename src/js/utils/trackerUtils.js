@@ -7,7 +7,7 @@ import { getDomainName, getAllSubdomains } from "./genericUtils";
  *
  * @return {boolean} - returns boolean based on whether match is found
  */
-export const matchTrackersWithUrl = (
+export const matchTrackers = (
   requestDetails,
   trackerList,
   whitelistedDomains
@@ -82,7 +82,6 @@ export const matchTrackersWithUrl = (
       return true;
     }
     // Compute match against 'domain' and 'types' attributes of 'options' and 'exceptions'
-    // TODO: Need to match sub domains also here iteratively
     const isOptionDomainRuleMatched = documentSubdomainList.some((subdomain) =>
       ruleObj.options?.domains?.includes?.(subdomain)
     );

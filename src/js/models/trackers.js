@@ -2,7 +2,7 @@ import { getDomainName } from "../utils/genericUtils";
 import { getFromStorage, saveToStorage } from "../utils/storageUtils";
 import { TRACKER_LIST_FETCH_URL, STORAGE_NAMES } from "../constants";
 import { getCurrentTab } from "../utils/tabUtils";
-import { matchTrackersWithUrl } from "../utils/trackerUtils";
+import { matchTrackers } from "../utils/trackerUtils";
 
 class Tracker {
   constructor() {
@@ -21,6 +21,7 @@ class Tracker {
     if (!blockedTrackers) {
       return {};
     }
+    // If tabId is passed return for that tab else return all
     if (tabId) {
       return blockedTrackers[tabId];
     }
@@ -36,18 +37,18 @@ class Tracker {
     const whitelistedDomains = await getFromStorage(
       STORAGE_NAMES.WHITELISTED_DOCUMENT_DOMAINS
     );
-    const isCancel = matchTrackersWithUrl(
+    const isCancel = matchTrackers(
       requestDetails,
       this._trackerList,
       whitelistedDomains
     );
     if (isCancel) {
-      this.updateBlockedTrackers(requestDetails);
+      this.updateBlockedTrackersLog(requestDetails);
     }
     return isCancel;
   }
 
-  async updateBlockedTrackers(requestDetails) {
+  async updateBlockedTrackersLog(requestDetails) {
     const currentTab = await getCurrentTab();
     const requestDomainName = getDomainName(requestDetails.url);
     let currentBlockedTrackers = await getFromStorage(
@@ -86,6 +87,7 @@ class Tracker {
   }
 }
 
+// Returning a singleton instance.
 let instance;
 const getTrackerInstance = () => {
   if (instance !== undefined) {

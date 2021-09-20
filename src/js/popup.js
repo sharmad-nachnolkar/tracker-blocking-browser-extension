@@ -42,6 +42,7 @@ const formBlockedTrackersHtml = (blockedTrackers) => {
   }
   return blockedTrackerHtmlList.join("");
 };
+
 const initTrackingSelectionOption = (preventTrackingValue) => {
   const radios = document.querySelectorAll(
     'input[type=radio][name="preventTracking"]'
@@ -53,6 +54,7 @@ const initTrackingSelectionOption = (preventTrackingValue) => {
     }
   });
 };
+
 const initWhitelistedDomainsList = (currentWhitelistedDomains) => {
   let whitelistedDomainsHtml = null;
   if (currentWhitelistedDomains) {
@@ -66,6 +68,7 @@ const initWhitelistedDomainsList = (currentWhitelistedDomains) => {
       whitelistedDomainsHtml === "" ? "NONE" : whitelistedDomainsHtml;
   }
 };
+
 const initBlockedTrackersList = async (blockedTrackers) => {
   const blockedTrackersHtml = formBlockedTrackersHtml(blockedTrackers);
   const blockedTrackersDiv = document.querySelector(

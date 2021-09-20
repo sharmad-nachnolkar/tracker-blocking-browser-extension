@@ -8,7 +8,7 @@ export const getCurrentTab = async () => {
   return currentTab;
 };
 
-// If tabId is passed relaods that tab else reloads current active tab
+// If tabId is passed, reloads that tab else reloads current active tab
 export const reloadTab = async (tabId, bypassCache = false) => {
   let reloadTabId = tabId;
   if (!reloadTabId) {
