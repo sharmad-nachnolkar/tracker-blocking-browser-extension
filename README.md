@@ -16,9 +16,13 @@ Watch the [video](https://www.loom.com/share/14831f37bcf64dd4a06ee63145896af4) o
  1. Clone the [project](https://github.com/sharmad-nachnolkar/tracker-blocking-browser-extension) from github 
  2. Run `npm install`
  3. Run `npm run build-dev`
- 4. Open the browser you want to run the extension in and load unpacked files from **dist folder.** In case of firefox a **zip file** is needed which can be found in the **builds folder** as **build.zip**
+ 4. Open the browser you want to run the extension in and load unpacked files from **dist folder.** In case of firefox a **zip file** is needed which can be found in the **builds folder** as **build.zip**. For details of running the extension in a particular browser, see below documentation.
 
-*To create the production build (optimised) run* - `npm run build-prod` 
+*To create the production build (optimised) run* - `npm run build-prod` \
+*Follow the below documentation to run the extension in different browsers*
+- [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing)
+- [Chrome](https://developer.chrome.com/docs/extensions/mv3/getstarted/#manifest)
+- [Edge](https://docs.microsoft.com/en-us/microsoft-edge/extensions-chromium/getting-started/extension-sideloading)
 
  ---
  ### List of commands
@@ -31,16 +35,17 @@ Watch the [video](https://www.loom.com/share/14831f37bcf64dd4a06ee63145896af4) o
 
 ---
 ### System Requirements
-This project needs node versions >= 10.x.x and npm >= 7.x.x
+This project needs node versions >= 12.x.x and npm >= 7.x.x
 
 ---
 ###  Limitations / Known Issues
 
  1. Currently the blocked trackers are internally tracked and displayed to the user at a `tab` level. Hence if user is navigating to multiple sites in the same tab, user will see the entire blocked tracker history on that tab. Can add a feature for user to see which trackers are blocked in the currently opened site.
- 2. The build is not tested in Safari since running a local build in Safari needs a XCode build. However since the project used the standard [WebExtensions APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs) which are supported in Safari (>= 14), the build should be usable in Safari as well as is or with minor tweaks.
- 3. This extension is tested in Firefox, Chrome, Edge browsers. However, an exhaustive testing across different versions of these browsers can be done by using tools like BrowserStack.
- 4. Currently `beacon` type requests are not intercepted. This is because chromium based browser use `ping` and does not support `beacon`. A conditional browser based check needs to be added to support `beacon` request on on Firefox.
- 5. This extensions has not been tested on mobile version of browsers.
+ 2. Edge case where fetch request for tracker fails is not handeld. Need to add a retry mechanism in this case which can retry the fetch request periodically for fixed number of times in case of failure.
+ 3. The build is not tested in Safari since running a local build in Safari needs a [Xcode build (macOS / iOS app)](https://developer.apple.com/documentation/safariservices/safari_web_extensions/running_your_safari_web_extension). However since this project uses the standard [WebExtensions APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs) which are supported in Safari (>= 14), the build should be usable in Safari as well as is or with minor tweaks.
+ 4. This extension is tested in Firefox, Chrome, Edge browsers. However, an exhaustive testing across different versions of these browsers can be done by using tools like BrowserStack.
+ 5. Currently `beacon` type requests are not intercepted. This is because chromium based browser use `ping` and does not support `beacon`. A conditional browser based check needs to be added to support `beacon` request on on Firefox.
+ 6. This extensions has not been tested on mobile version of browsers.
 
 
 ---
