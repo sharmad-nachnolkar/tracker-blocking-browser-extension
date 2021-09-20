@@ -21,6 +21,15 @@ Watch the [video](https://www.loom.com/share/14831f37bcf64dd4a06ee63145896af4) o
 *To create the production build (optimised) run* - `npm run build-prod` 
 
  ---
+ ### List of commands
+
+ - `npm run build-dev` - To run webpack develoment build
+ - `npm run build-prod` - To run webpack production build
+ - `npm run test` - To run jest unit tests
+ - `npm run lint` - To run eslint on `src` folder
+ - `npm run prettify` - To run prettier on `src` folder
+
+---
 ### System Requirements
 This project needs node versions >= 10.x.x and npm >= 7.x.x
 
@@ -62,15 +71,6 @@ This project needs node versions >= 10.x.x and npm >= 7.x.x
  7. Use integrations with cross browser testing tools like [BrowserStack](https://www.browserstack.com/integrations) to automatically [test extension](https://www.browserstack.com/docs/automate/selenium/add-plugins-extensions-remote-browsers#introduction) in multiple browser environments.
  8. Integrate with open source tools like [self hosted Sentry](https://develop.sentry.dev/self-hosted/) for error monitoring
  9. Integrate with a backend service to capture logs and analytics like blocked trackers logs, performance logs etc.
-
----
-### List of commands
-
- - `npm run build-dev` - To run webpack develoment build
- - `npm run build-prod` - To run webpack production build
- - `npm run test` - To run jest unit tests
- - `npm run lint` - To run eslint on `src` folder
- - `npm run prettify` - To run prettier on `src` folder
 
 ---
 ### Technical References
